@@ -1,38 +1,61 @@
-let word = document.querySelector("#word");
-let newWord = document.querySelector("#newWord");
-let timer = document.querySelector("#timer");
-let words;
-fetch('./words.json')
-    .then(response => response.json())
-    .then(data => {
-        newWord.removeAttribute("disabled");
-        words = data.words;
-    } );
-
-function startWordPrepare() {
-    const pickedWord = words[Math.floor(Math.random()*words.length)];
-    word.innerHTML = pickedWord;
-    timer.className  = "blue";
-    setTimer((d) => { timer.innerHTML = `${d}` }, () => {startWordCountdown(pickedWord)}, 3);
-}
-
-function startWordCountdown(pickedWord) {
-    word.innerHTML = "XXX"
-    setTimer((d) => { timer.innerHTML = `${d}` }, () => {wordReveal(pickedWord)}, 30);
-}
-
-function wordReveal(pickedWord) {
-    word.innerHTML = pickedWord;
-    timer.innerHTML = "TIME OUT";
-}
-
-function setTimer(during, after, delay) {
-    if(delay === 0) {
-        return after();
-    } else {
-        during(delay);
-        setTimeout(() => setTimer(during, after, delay -1), 1000);
+const setElemInnerHTML = ({ selector, value}) => {
+    const elem = document.querySelector(selector);
+    if (!elem) {
+        return;
     }
-}
 
-newWord.onclick = () => startWordPrepare();
+    elem.innerHTML = value;
+};
+
+const setElemClass = ({ selector, value}) => {
+    const elem = document.querySelector(selector);
+    if (!elem) {
+        return;
+    }
+
+    elem.classList.add(value);
+};
+
+const startWordPrepare = (words, setTimer) => {
+    const pickedWord = words?.[Math.floor(Math.random()*words.length)];
+
+    setElemInnerHTML({ selector: ".word", value: pickedWord || ""});
+    setElemClass({ selector: ".timer", value: "blue" });
+
+    setTimer({ after: () => startWordCountdown(pickedWord, setTimer), delay: 3});
+};
+
+const startWordCountdown = (pickedWord, setTimer) => {
+    setElemInnerHTML({ selector: ".word", value: "XXX" });
+
+    setTimer({ after: () => wordReveal(pickedWord), delay: 30});
+};
+
+const wordReveal = (pickedWord) => {
+    setElemInnerHTML({ selector: ".word", value: pickedWord });
+    setElemInnerHTML({ selector: ".timer", value: "TIME OUT" });
+};
+
+const setTimerCurr = (timeoutId) => ({ after, delay})=> {
+
+    if (delay === 0) {
+        return after();
+    }
+
+    setElemInnerHTML({ selector: ".timer", value: `${delay}`});
+    timeoutId[0] = setTimeout(() => setTimerCurr(timeoutId)({ after, delay: delay - 1}), 1000);
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+    let newWord = document.querySelector("button");
+    let timeoutId = [];
+
+    const response = await fetch('./words.json');
+    const { words } = await response.json();
+    newWord.addEventListener("click", () => {
+        console.log(timeoutId);
+        clearTimeout(timeoutId.pop());
+        startWordPrepare(words, setTimerCurr(timeoutId));
+    }, { passive: true });
+    newWord.removeAttribute("disabled");
+});
