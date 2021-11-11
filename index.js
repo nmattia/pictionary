@@ -1,3 +1,5 @@
+const MAX_DELAY = 30;
+
 const setElemInnerHTML = ({ selector, value}) => {
     const elem = document.querySelector(selector);
     if (!elem) {
@@ -28,7 +30,7 @@ const startWordPrepare = (words, setTimer) => {
 const startWordCountdown = (pickedWord, setTimer) => {
     setElemInnerHTML({ selector: ".word", value: "XXX" });
 
-    setTimer({ after: () => wordReveal(pickedWord), delay: 30});
+    setTimer({ after: () => wordReveal(pickedWord), delay: MAX_DELAY});
 };
 
 const wordReveal = (pickedWord) => {
@@ -38,11 +40,16 @@ const wordReveal = (pickedWord) => {
 
 const setTimerCurr = (timeoutId) => ({ after, delay})=> {
 
+    const timer = document.querySelector(".timer");
+
+
     if (delay === 0) {
         return after();
     }
 
     setElemInnerHTML({ selector: ".timer", value: `${delay}`});
+    const delayPerc = delay * 100.0 / MAX_DELAY;
+    timer.style.setProperty("--percent", `${delayPerc}%`);
     timeoutId[0] = setTimeout(() => setTimerCurr(timeoutId)({ after, delay: delay - 1}), 1000);
 };
 

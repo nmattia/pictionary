@@ -1,0 +1,52 @@
+:root {
+    --color-numbers: #56d9d3;
+    --color-bar: #3b7876;
+    --color-background: #ecd6e0;
+    --color-word: #9dece6;
+}
+
+h1 {
+    font-family: 'Mohave', sans-serif;
+    text-align: center;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--color-background);
+
+}
+
+section {
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+}
+
+.word {
+    color: black;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 2em;
+}
+
+.timer {
+    --percent: 30%;
+    font-size: 5em;
+    color: var(--color-numbers);
+    padding: 1em;
+    background:  linear-gradient(to bottom, var(--color-bar) 0%, var(--color-bar) 100%) no-repeat;
+    background-size: 100% calc(var(--percent));
+    background-position: bottom;
+}
+
+.board {
+    max-width: 300px;
+    margin: auto;
+
+}
+
+button {
+    padding: 0.6em;
+    margin: 1em;
+
+}
