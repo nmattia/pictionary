@@ -18,23 +18,36 @@ const setElemClass = ({ selector, value}) => {
     elem.classList.add(value);
 };
 
-const startWordPrepare = (words, setTimer) => {
-    const pickedWord = words?.[Math.floor(Math.random()*words.length)];
+const setWord = (content) => {
+    const elem = document.querySelector(".word");
+    if(!elem) {
+        return;
+    }
+    let len = Math.min(content.length, 12);
+    len = Math.max(len, 1);
 
-    setElemInnerHTML({ selector: ".word", value: pickedWord || ""});
+    elem.style.setProperty('--word-scale', `${20.0/len}rem`);
+    elem.innerHTML = content;
+}
+
+const startWordPrepare = (words, setTimer) => {
+    const pickedWord = words?.[Math.floor(Math.random()*words.length)] || "XXX";
+
+
+    setWord(pickedWord);
     setElemClass({ selector: ".timer", value: "blue" });
 
     setTimer({ after: () => startWordCountdown(pickedWord, setTimer), delay: 3});
 };
 
 const startWordCountdown = (pickedWord, setTimer) => {
-    setElemInnerHTML({ selector: ".word", value: "XXX" });
+    setWord("XXX");
 
     setTimer({ after: () => wordReveal(pickedWord), delay: MAX_DELAY});
 };
 
 const wordReveal = (pickedWord) => {
-    setElemInnerHTML({ selector: ".word", value: pickedWord });
+    setWord(pickedWord);
     setElemInnerHTML({ selector: ".timer", value: "TIME OUT" });
 };
 
