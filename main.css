@@ -45,7 +45,7 @@ section {
     font-weight: 300;
     font-size: var(--word-scale);
     height: var(--word-scale);
-    margin: auto;
+    letter-spacing: 0;
 }
 
 .timer {
@@ -62,7 +62,6 @@ section {
 }
 
 button {
-    padding: 0.6em;
-    margin: 1em;
-
+    width: 100%;
+    font-size: calc(5rem + 3vw);
 }
